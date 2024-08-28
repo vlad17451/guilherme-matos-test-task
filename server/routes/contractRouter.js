@@ -15,6 +15,15 @@ router
     async (req, res) => {
       const address = req.params.address;
 
+      const isAddress = ethers.utils.isAddress(address);
+      if (!isAddress) {
+        res.send({
+          address,
+          isContract: false
+        });
+        return;
+      }
+
       const isContract = await new ethers.providers.JsonRpcProvider(RPC).getCode(address).then(code => code !== '0x');
 
       if (!isContract) {
